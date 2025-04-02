@@ -5,4 +5,5 @@ export interface Livestream {
   url: string;
   timestamp: Date;
   isPinned?: boolean;
+  html?: string; // Optional HTML content for embedding
 }

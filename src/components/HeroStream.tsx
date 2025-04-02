@@ -29,8 +29,15 @@ const HeroStream: React.FC<HeroStreamProps> = ({ stream }) => {
         >
           {stream.title}
         </a>
-        <div className="h-40 bg-gray-100 flex items-center justify-center mb-2 border border-black">
-          <span className="font-mono">[ STREAM PREVIEW ]</span>
+        <div className="h-64 bg-gray-100 flex items-center justify-center mb-2 border border-black">
+          {stream.html ? (
+            <div 
+              className="w-full h-full"
+              dangerouslySetInnerHTML={{ __html: stream.html }}
+            />
+          ) : (
+            <span className="font-mono">[ STREAM PREVIEW ]</span>
+          )}
         </div>
         <p className="font-mono text-sm mt-2">
           {formatTimestamp(stream.timestamp)}
