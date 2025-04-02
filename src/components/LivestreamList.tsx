@@ -20,11 +20,11 @@ const LivestreamList: React.FC<LivestreamListProps> = ({ streams, onPin }) => {
   return (
     <div className="my-6">
       <h2 className="text-xl font-bold font-mono uppercase text-center mb-4 border-b-2 border-black pb-2">
-        LATEST STREAMS
+        RECENTLY SUBMITTED STREAMS
       </h2>
       <div className="grid md:grid-cols-2 gap-4">
         {streams.map((stream) => (
-          <div key={stream.id} className="p-2 border-b border-gray-300 relative">
+          <div key={stream.id} className="p-4 border border-gray-300 relative">
             <a 
               href={stream.url} 
               target="_blank" 
@@ -33,6 +33,16 @@ const LivestreamList: React.FC<LivestreamListProps> = ({ streams, onPin }) => {
             >
               {stream.title}
             </a>
+            
+            {stream.html && (
+              <div className="h-48 bg-gray-100 my-2 border border-black">
+                <div 
+                  className="w-full h-full"
+                  dangerouslySetInnerHTML={{ __html: stream.html }}
+                />
+              </div>
+            )}
+
             <div className="flex justify-between items-center mt-1">
               <span className="font-mono text-xs">
                 {formatTimestamp(stream.timestamp)}
