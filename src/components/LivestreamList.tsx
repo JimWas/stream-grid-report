@@ -5,7 +5,7 @@ import { formatTimestamp } from '@/utils/validation';
 
 interface LivestreamListProps {
   streams: Livestream[];
-  onPin: (id: string) => void;
+  onPin?: (id: string) => void;
 }
 
 const LivestreamList: React.FC<LivestreamListProps> = ({ streams, onPin }) => {
@@ -37,13 +37,15 @@ const LivestreamList: React.FC<LivestreamListProps> = ({ streams, onPin }) => {
               <span className="font-mono text-xs">
                 {formatTimestamp(stream.timestamp)}
               </span>
-              <button 
-                onClick={() => onPin(stream.id)} 
-                className="font-mono text-xs underline"
-                title={stream.isPinned ? "Unpin from featured" : "Pin as featured"}
-              >
-                {stream.isPinned ? "UNPIN" : "PIN"}
-              </button>
+              {onPin && (
+                <button 
+                  onClick={() => onPin(stream.id)} 
+                  className="font-mono text-xs underline"
+                  title={stream.isPinned ? "Unpin from featured" : "Pin as featured"}
+                >
+                  {stream.isPinned ? "UNPIN" : "PIN"}
+                </button>
+              )}
             </div>
           </div>
         ))}
