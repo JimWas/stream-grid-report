@@ -89,7 +89,7 @@ const Index: React.FC = () => {
       id: uuidv4(),
       timestamp: new Date(),
       isPinned: false,
-      isApproved: isAdmin ? true : false // Auto-approve if submitted by admin
+      isApproved: true // Auto-approve all submissions
     };
     
     setLivestreams(prev => [stream, ...prev]);
