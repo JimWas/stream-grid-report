@@ -15,7 +15,7 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [html, setHtml] = useState('');
-  const [platform, setPlatform] = useState<'none' | 'twitch' | 'youtube'>('none');
+  const [platform, setPlatform] = useState<'none' | 'twitch' | 'youtube' | 'kick' | 'rumble' | 'x'>('none');
   const [channelHandle, setChannelHandle] = useState('');
 
   const generateEmbedCode = () => {
@@ -23,6 +23,12 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
       return `<iframe src="https://player.twitch.tv/?channel=${channelHandle}&parent=${window.location.hostname}" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
     } else if (platform === 'youtube' && channelHandle) {
       return `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${channelHandle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else if (platform === 'kick' && channelHandle) {
+      return `<iframe src="https://player.kick.com/${channelHandle}" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
+    } else if (platform === 'rumble' && channelHandle) {
+      return `<iframe src="https://rumble.com/embed/${channelHandle}/" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
+    } else if (platform === 'x' && channelHandle) {
+      return `<iframe src="https://x.com/i/broadcasts/${channelHandle}" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
     }
     return '';
   };
@@ -99,7 +105,7 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
         
         <div>
           <label htmlFor="platform" className="block mb-1 font-mono">PLATFORM:</label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 mb-2">
             <Button 
               type="button" 
               onClick={() => setPlatform('none')}
@@ -122,12 +128,39 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
               YOUTUBE
             </Button>
           </div>
+          <div className="grid grid-cols-3 gap-2">
+            <Button 
+              type="button" 
+              onClick={() => setPlatform('kick')}
+              className={`font-mono ${platform === 'kick' ? 'bg-black text-white' : 'bg-white text-black border border-black'}`}
+            >
+              KICK
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => setPlatform('rumble')}
+              className={`font-mono ${platform === 'rumble' ? 'bg-black text-white' : 'bg-white text-black border border-black'}`}
+            >
+              RUMBLE
+            </Button>
+            <Button 
+              type="button" 
+              onClick={() => setPlatform('x')}
+              className={`font-mono ${platform === 'x' ? 'bg-black text-white' : 'bg-white text-black border border-black'}`}
+            >
+              X
+            </Button>
+          </div>
         </div>
         
         {platform !== 'none' && (
           <div>
             <label htmlFor="channelHandle" className="block mb-1 font-mono">
-              {platform === 'twitch' ? 'TWITCH USERNAME:' : 'YOUTUBE VIDEO ID:'}
+              {platform === 'twitch' && 'TWITCH USERNAME:'}
+              {platform === 'youtube' && 'YOUTUBE VIDEO ID:'}
+              {platform === 'kick' && 'KICK USERNAME:'}
+              {platform === 'rumble' && 'RUMBLE VIDEO ID:'}
+              {platform === 'x' && 'X BROADCAST ID:'}
             </label>
             <Input
               id="channelHandle"
@@ -135,12 +168,20 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
               value={channelHandle}
               onChange={(e) => setChannelHandle(e.target.value)}
               className="w-full border-black font-mono"
-              placeholder={platform === 'twitch' ? 'e.g. twitchuser' : 'e.g. dQw4w9WgXcQ'}
+              placeholder={
+                platform === 'twitch' ? 'e.g. twitchuser' :
+                platform === 'youtube' ? 'e.g. dQw4w9WgXcQ' :
+                platform === 'kick' ? 'e.g. kickuser' :
+                platform === 'rumble' ? 'e.g. v123456' :
+                platform === 'x' ? 'e.g. 1234567890' : ''
+              }
             />
             <p className="text-xs mt-1 text-gray-600 font-mono">
-              {platform === 'twitch' 
-                ? 'Enter your Twitch username only, not the full URL' 
-                : 'Enter the YouTube video ID (found in the URL after v=)'}
+              {platform === 'twitch' && 'Enter your Twitch username only, not the full URL'}
+              {platform === 'youtube' && 'Enter the YouTube video ID (found in the URL after v=)'}
+              {platform === 'kick' && 'Enter your Kick username only, not the full URL'}
+              {platform === 'rumble' && 'Enter the Rumble video ID (found in the URL after v)'}
+              {platform === 'x' && 'Enter the X broadcast ID from the live stream URL'}
             </p>
           </div>
         )}

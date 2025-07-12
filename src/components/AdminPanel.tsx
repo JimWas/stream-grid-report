@@ -104,6 +104,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                           >
                             {stream.isPinned ? 'PINNED ★' : 'PIN'}
                           </Button>
+                          <Button 
+                            onClick={() => onReject(stream.id)} 
+                            className="bg-red-600 text-white font-mono text-xs px-2 py-1 h-auto hover:bg-red-700"
+                          >
+                            REMOVE
+                          </Button>
                           <Drawer>
                             <DrawerTrigger asChild>
                               <Button className="bg-white text-black border border-black font-mono text-xs px-2 py-1 h-auto">
@@ -129,7 +135,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 <div className="flex gap-2 justify-end">
                                   <Button 
                                     onClick={() => onReject(stream.id)} 
-                                    className="bg-white text-black border border-black font-mono"
+                                    className="bg-red-600 text-white border border-red-600 font-mono hover:bg-red-700"
                                   >
                                     REMOVE
                                   </Button>
