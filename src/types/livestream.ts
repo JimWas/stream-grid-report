@@ -10,4 +10,6 @@ export interface Livestream {
   channelHandle?: string; // Username/channel ID
   isApproved?: boolean; // For moderation
   isHero?: boolean; // For stream of the hour
+  userId?: string; // User who submitted the stream
+  userEmail?: string; // User email for display purposes
 }

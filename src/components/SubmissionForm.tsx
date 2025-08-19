@@ -1,11 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { isValidUrl } from '@/utils/validation';
 import { toast } from '@/components/ui/use-toast';
 import { Livestream } from '@/types/livestream';
+import { supabase } from '@/lib/supabase';
+import { User } from '@supabase/supabase-js';
 
 interface SubmissionFormProps {
   onSubmit: (livestream: Omit<Livestream, 'id' | 'timestamp'>) => void;
@@ -17,6 +19,23 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
   const [html, setHtml] = useState('');
   const [platform, setPlatform] = useState<'none' | 'twitch' | 'youtube' | 'kick' | 'rumble' | 'x'>('none');
   const [channelHandle, setChannelHandle] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Get current user
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const generateEmbedCode = () => {
     if (platform === 'twitch' && channelHandle) {
@@ -33,9 +52,17 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
     return '';
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!user) {
+      toast({
+        description: "Please sign in to submit a livestream.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!title.trim()) {
       toast({
         description: "Please enter a title for the livestream.",
@@ -52,29 +79,75 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
       return;
     }
 
-    // Generate embed code if platform is selected
-    const generatedHtml = platform !== 'none' ? generateEmbedCode() : html;
+    try {
+      // Generate embed code if platform is selected
+      const generatedHtml = platform !== 'none' ? generateEmbedCode() : html;
 
-    onSubmit({ 
-      title, 
-      url, 
-      html: generatedHtml, 
-      platform: platform !== 'none' ? platform : undefined,
-      channelHandle: channelHandle || undefined,
-      isApproved: false, // All submissions start as unapproved
-      isHero: false
-    });
-    
-    setTitle('');
-    setUrl('');
-    setHtml('');
-    setPlatform('none');
-    setChannelHandle('');
-    
-    toast({
-      description: "Livestream submitted for approval!",
-    });
+      const { error } = await supabase
+        .from('livestreams')
+        .insert({
+          title: title.trim(),
+          url,
+          html: generatedHtml,
+          platform: platform !== 'none' ? platform : null,
+          channel_handle: channelHandle || null,
+          user_id: user.id,
+          user_email: user.email,
+          is_approved: true, // Auto-approve all submissions
+          is_hero: false,
+          is_pinned: false
+        });
+
+      if (error) throw error;
+
+      // Also call the legacy onSubmit for backward compatibility
+      onSubmit({ 
+        title, 
+        url, 
+        html: generatedHtml, 
+        platform: platform !== 'none' ? platform : undefined,
+        channelHandle: channelHandle || undefined,
+        isApproved: true,
+        isHero: false,
+        userId: user.id,
+        userEmail: user.email
+      });
+      
+      setTitle('');
+      setUrl('');
+      setHtml('');
+      setPlatform('none');
+      setChannelHandle('');
+      
+      toast({
+        description: "Livestream submitted successfully!",
+      });
+    } catch (error: any) {
+      toast({
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-md mx-auto my-6 p-4 border border-black">
+        <div className="text-center font-mono">LOADING...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto my-6 p-4 border border-black">
+        <h2 className="text-xl font-bold font-mono uppercase mb-4 text-center">SUBMIT A LIVESTREAM</h2>
+        <p className="text-center font-mono text-gray-600 mb-4">
+          Please sign in to submit a livestream.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-md mx-auto my-6 p-4 border border-black">
