@@ -93,7 +93,7 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
           channel_handle: channelHandle || null,
           user_id: user.id,
           user_email: user.email,
-          is_approved: true, // Auto-approve all submissions
+          is_approved: false, // Require admin approval
           is_hero: false,
           is_pinned: false
         });
@@ -107,7 +107,7 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
         html: generatedHtml, 
         platform: platform !== 'none' ? platform : undefined,
         channelHandle: channelHandle || undefined,
-        isApproved: true,
+        isApproved: false,
         isHero: false,
         userId: user.id,
         userEmail: user.email
@@ -120,7 +120,7 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
       setChannelHandle('');
       
       toast({
-        description: "Livestream submitted successfully!",
+        description: "Livestream submitted for approval!",
       });
     } catch (error: any) {
       toast({
