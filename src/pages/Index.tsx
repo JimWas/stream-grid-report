@@ -9,7 +9,7 @@ import { Livestream } from '@/types/livestream';
 import { useSupabaseLivestreams } from "@/hooks/useSupabaseLivestreams";
 import StreamOfTheHour from '@/components/StreamOfTheHour';
 import FeaturedStream from '@/components/FeaturedStream';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
 const Index: React.FC = () => {

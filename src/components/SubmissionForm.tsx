@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { isValidUrl } from '@/utils/validation';
 import { toast } from '@/components/ui/use-toast';
 import { Livestream } from '@/types/livestream';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { User } from '@supabase/supabase-js';
 
 interface SubmissionFormProps {
