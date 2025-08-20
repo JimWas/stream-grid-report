@@ -4,18 +4,15 @@ import Header from '@/components/Header';
 import SubmissionForm from '@/components/SubmissionForm';
 import LivestreamList from '@/components/LivestreamList';
 import AdminPanel from '@/components/AdminPanel';
-import UserDashboard from '@/components/UserDashboard';
 import { Livestream } from '@/types/livestream';
-import { useSupabaseLivestreams } from "@/hooks/useSupabaseLivestreams";
+import { useLivestreams } from "@/hooks/useLivestreams";
+import AdminLoginButton from '@/components/AdminLoginButton';
 import StreamOfTheHour from '@/components/StreamOfTheHour';
 import FeaturedStream from '@/components/FeaturedStream';
-import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
 
 const Index: React.FC = () => {
   const {
     livestreams,
-    loading,
     featuredStream,
     heroStream,
     approvedStreams,
@@ -25,39 +22,15 @@ const Index: React.FC = () => {
     handleApprove,
     handleReject,
     handleSetHero,
-  } = useSupabaseLivestreams();
+  } = useLivestreams();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
-  const [user, setUser] = useState<User | null>(null);
-  const [showUserDashboard, setShowUserDashboard] = useState(false);
-
-  useEffect(() => {
-    // Get current user
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) {
-        setShowUserDashboard(false);
-      }
-    });
-
-    // Check if admin is already logged in
-    const adminLoggedIn = localStorage.getItem('isAdmin') === 'true';
-    setIsAdmin(adminLoggedIn);
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   // Simple admin login check - in a real app, use proper authentication
-  const checkAdminPassword = (password: string) => {
-    setAdminPassword(password);
+  const checkAdminPassword = () => {
     // Simple hard-coded password for demo purposes
-    if (password === 'admin123') {
+    if (adminPassword === 'admin123') {
       setIsAdmin(true);
       localStorage.setItem('isAdmin', 'true');
     } else {
@@ -67,32 +40,26 @@ const Index: React.FC = () => {
     }
   };
 
-  // Check if Supabase is configured
-  const supabaseConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
+  useEffect(() => {
+    // Check if admin is already logged in
+    const adminLoggedIn = localStorage.getItem('isAdmin') === 'true';
+    setIsAdmin(adminLoggedIn);
+  }, []);
 
-  if (!supabaseConfigured) {
-    return (
-      <div className="min-h-screen bg-white text-black font-mono flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-2xl mb-4">SUPABASE INTEGRATION REQUIRED</div>
-          <p className="text-sm">Please connect to Supabase using the green button in the top right to enable authentication and data storage.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white text-black font-mono flex items-center justify-center">
-        <div className="text-2xl">LOADING...</div>
-      </div>
-    );
-  }
+  // Admin password remains 'admin123' as before.
 
   return (
     <div className="min-h-screen bg-white text-black font-mono">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
-        <Header onAdminLogin={checkAdminPassword} isAdmin={isAdmin} />
+        <Header />
+        {!isAdmin && (
+          <AdminLoginButton
+            onLogin={(password: string) => {
+              setAdminPassword(password);
+              checkAdminPassword();
+            }}
+          />
+        )}
         {isAdmin && (
           <div className="mb-8">
             <AdminPanel
@@ -108,19 +75,6 @@ const Index: React.FC = () => {
             />
           </div>
         )}
-
-        {user && !isAdmin && (
-          <div className="mb-6 text-center">
-            <button
-              onClick={() => setShowUserDashboard(!showUserDashboard)}
-              className="font-mono bg-black text-white px-4 py-2 hover:bg-gray-800"
-            >
-              {showUserDashboard ? 'HIDE' : 'MANAGE'} YOUR SUBMISSIONS
-            </button>
-          </div>
-        )}
-
-        {showUserDashboard && user && <UserDashboard user={user} />}
 
         <StreamOfTheHour stream={heroStream} />
 

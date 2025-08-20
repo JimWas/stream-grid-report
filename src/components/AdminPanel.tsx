@@ -60,7 +60,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             <TableHeader>
               <TableRow>
                 <TableHead className="font-mono">TITLE</TableHead>
-                <TableHead className="font-mono">USER</TableHead>
                 <TableHead className="font-mono">SUBMITTED</TableHead>
                 <TableHead className="font-mono">PLATFORM</TableHead>
                 <TableHead className="font-mono">ACTIONS</TableHead>
@@ -70,7 +69,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
               {displayStreams.map((stream) => (
                 <TableRow key={stream.id}>
                   <TableCell className="font-mono">{stream.title}</TableCell>
-                  <TableCell className="font-mono text-xs">{stream.userEmail || 'Unknown'}</TableCell>
                   <TableCell className="font-mono text-xs">{formatTimestamp(stream.timestamp)}</TableCell>
                   <TableCell className="font-mono text-xs uppercase">{stream.platform || 'Custom'}</TableCell>
                   <TableCell>
