@@ -67,6 +67,20 @@ const Index: React.FC = () => {
     }
   };
 
+  // Check if Supabase is configured
+  const supabaseConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  if (!supabaseConfigured) {
+    return (
+      <div className="min-h-screen bg-white text-black font-mono flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-2xl mb-4">SUPABASE INTEGRATION REQUIRED</div>
+          <p className="text-sm">Please connect to Supabase using the green button in the top right to enable authentication and data storage.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white text-black font-mono flex items-center justify-center">
