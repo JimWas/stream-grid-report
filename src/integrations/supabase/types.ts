@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      livestreams: {
+        Row: {
+          channel_handle: string | null
+          created_at: string
+          html: string | null
+          id: string
+          is_approved: boolean
+          is_hero: boolean
+          is_pinned: boolean
+          platform: string | null
+          title: string
+          updated_at: string
+          url: string
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          channel_handle?: string | null
+          created_at?: string
+          html?: string | null
+          id?: string
+          is_approved?: boolean
+          is_hero?: boolean
+          is_pinned?: boolean
+          platform?: string | null
+          title: string
+          updated_at?: string
+          url: string
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          channel_handle?: string | null
+          created_at?: string
+          html?: string | null
+          id?: string
+          is_approved?: boolean
+          is_hero?: boolean
+          is_pinned?: boolean
+          platform?: string | null
+          title?: string
+          updated_at?: string
+          url?: string
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
