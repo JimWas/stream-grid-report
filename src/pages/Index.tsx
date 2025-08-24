@@ -30,7 +30,7 @@ const Index: React.FC = () => {
   // Simple admin login check - in a real app, use proper authentication
   const checkAdminPassword = () => {
     // Simple hard-coded password for demo purposes
-    if (adminPassword === 'admin123') {
+    if (adminPassword === 'Iloveaudrey061788!$') {
       setIsAdmin(true);
       localStorage.setItem('isAdmin', 'true');
     } else {
@@ -46,7 +46,7 @@ const Index: React.FC = () => {
     setIsAdmin(adminLoggedIn);
   }, []);
 
-  // Admin password remains 'admin123' as before.
+  // Admin password is now 'Iloveaudrey061788!$'.
 
   return (
     <div className="min-h-screen bg-white text-black font-mono">
