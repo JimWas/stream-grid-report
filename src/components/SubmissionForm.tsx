@@ -20,15 +20,15 @@ const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit }) => {
 
   const generateEmbedCode = () => {
     if (platform === 'twitch' && channelHandle) {
-      return `<iframe src="https://player.twitch.tv/?channel=${channelHandle}&parent=${window.location.hostname}" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
+      return `<iframe src="https://player.twitch.tv/?channel=${channelHandle}&parent=${window.location.hostname}&autoplay=true&muted=true" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
     } else if (platform === 'youtube' && channelHandle) {
-      return `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${channelHandle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      return `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${channelHandle}?autoplay=1&mute=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
     } else if (platform === 'kick' && channelHandle) {
-      return `<iframe src="https://player.kick.com/${channelHandle}" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
+      return `<iframe src="https://player.kick.com/${channelHandle}?autoplay=true&muted=true" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
     } else if (platform === 'rumble' && channelHandle) {
-      return `<iframe src="https://rumble.com/embed/${channelHandle}/" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
+      return `<iframe src="https://rumble.com/embed/${channelHandle}/?autoplay=2" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
     } else if (platform === 'x' && channelHandle) {
-      return `<iframe src="https://x.com/i/broadcasts/${channelHandle}" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
+      return `<iframe src="https://x.com/i/broadcasts/${channelHandle}?autoplay=true" frameborder="0" allowfullscreen="true" scrolling="no" height="100%" width="100%"></iframe>`;
     }
     return '';
   };
